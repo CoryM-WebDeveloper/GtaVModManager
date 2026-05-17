@@ -26,7 +26,7 @@ Document the programming languages, frameworks, and major dependencies used.
 
 LICENSE
 =
-Clearly state the project's license (e.g., MIT, Apache 2.0). 
+This project is licensed under GNU GENERAL PUBLIC LICENSE Version 3. A copy of the License is provided in this project. See LICENSE for the full breakdown.
 
 ACKNOWLEDGE & CONTACT
 =
@@ -34,7 +34,7 @@ Contributors:
 Cory Marth (Lead Developer)
 
 Contact Information:
-Contact bugs, fixes, recommendations, or any other inquiries to hello@corymarth.com
+If you would like to get involved in this project or support this project in any way, you are welcome to. Additionally, if you need to report a bug, offer a fix suggestion or other recommendation, or have any other inquiry, send an email to hello@corymarth.com.
 
 Related Projects:
 Currently, there are no related projects.
