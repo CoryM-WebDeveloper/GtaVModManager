@@ -1,0 +1,16 @@
+# Build output
+bin/
+obj/
+
+# VS Code
+.vscode/
+
+# Logs (runtime only)
+Logs/
+
+# Cache (safe to regenerate)
+Cache/
+
+# OS junk
+.DS_Store
+Thumbs.db
