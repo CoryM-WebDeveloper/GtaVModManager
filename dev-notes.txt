@@ -1,0 +1,398 @@
+Gta V Mod Manager Phase1 Settings Model And Json Save Load
+
+Phase 1: Settings Model and JSON Save/Load
+
+In this phase, we will build the configuration system that stores:
+
+GTA V installation path
+Launch executable path (for example GTA5.exe or RAGEPluginHook.exe)
+Active profile name
+Default folders used by the application
+
+This is the mod manager's memory crystal. Once this is working, the application can remember where everything lives between launches.
+
+Goal of Phase 1
+
+By the end of this phase, your application will:
+
+Create Settings.json automatically if it does not exist.
+Load settings when the application starts.
+Save settings when values change.
+Display a status message confirming the settings were loaded.
+
+Folder Structure:
+src/GtaVModManager/
+├── Models/
+│   └── Settings.cs
+├── Services/
+│   └── SettingsService.cs
+├── ViewModels/
+│   └── MainViewModel.cs
+├── MainWindow.xaml
+└── MainWindow.xaml.cs
+
+1. Create Models/Settings.cs
+namespace GtaVModManager.Models;
+
+public class Settings
+{
+    public string GamePath { get; set; } = string.Empty;
+
+    public string LaunchExecutable { get; set; } = string.Empty;
+
+    public string ActiveProfile { get; set; } = "Default";
+
+    public string ModsDirectory { get; set; } = "Mods";
+
+    public string ProfilesDirectory { get; set; } = "Profiles";
+
+    public string CacheDirectory { get; set; } = "Cache";
+
+    public string LogsDirectory { get; set; } = "Logs";
+}
+
+2. Create Services/SettingsService.cs
+using System.Text.Json;
+using GtaVModManager.Models;
+
+namespace GtaVModManager.Services;
+
+public class SettingsService
+{
+    private readonly string _settingsPath;
+
+    private readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        WriteIndented = true
+    };
+
+    public SettingsService()
+    {
+        // Project root = executable folder's parent directories.
+        // During development, the executable runs from:
+        // src/GtaVModManager/bin/Debug/net10.0-windows/
+        // We walk upward to the repository root.
+        var baseDir = AppContext.BaseDirectory;
+        var projectRoot = Directory
+            .GetParent(baseDir)!    // net10.0-windows
+            .Parent!                // Debug
+            .Parent!                // bin
+            .Parent!                // GtaVModManager
+            .Parent!                // src
+            .Parent!                // repository root
+            .FullName;
+
+        _settingsPath = Path.Combine(projectRoot, "Settings.json");
+    }
+
+    public string SettingsPath => _settingsPath;
+
+    public Settings Load()
+    {
+        if (!File.Exists(_settingsPath))
+        {
+            var defaultSettings = new Settings();
+            Save(defaultSettings);
+            return defaultSettings;
+        }
+
+        var json = File.ReadAllText(_settingsPath);
+
+        var settings = JsonSerializer.Deserialize<Settings>(json, _jsonOptions);
+
+        return settings ?? new Settings();
+    }
+
+    public void Save(Settings settings)
+    {
+        var json = JsonSerializer.Serialize(settings, _jsonOptions);
+        File.WriteAllText(_settingsPath, json);
+    }
+}
+
+
+3. Create ViewModels/MainViewModel.cs
+using CommunityToolkit.Mvvm.ComponentModel;
+using GtaVModManager.Models;
+using GtaVModManager.Services;
+
+namespace GtaVModManager.ViewModels;
+
+public partial class MainViewModel : ObservableObject
+{
+    private readonly SettingsService _settingsService;
+
+    [ObservableProperty]
+    private string statusText = "Initializing...";
+
+    [ObservableProperty]
+    private Settings settings = new();
+
+    public MainViewModel()
+    {
+        _settingsService = new SettingsService();
+
+        Settings = _settingsService.Load();
+
+        StatusText = $"Settings loaded from: {_settingsService.SettingsPath}";
+    }
+
+    public void SaveSettings()
+    {
+        _settingsService.Save(Settings);
+        StatusText = "Settings saved.";
+    }
+}
+
+4. Update MainWindow.xaml.cs
+using System.Windows;
+using GtaVModManager.ViewModels;
+
+namespace GtaVModManager;
+
+public partial class MainWindow : Window
+{
+    public MainWindow()
+    {
+        InitializeComponent();
+        DataContext = new MainViewModel();
+    }
+}
+
+5. Replace MainWindow.xaml
+<Window x:Class="GtaVModManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="GTA V Mod Manager"
+        Height="600"
+        Width="1000">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0"
+                   Text="GTA V Mod Manager"
+                   FontSize="28"
+                   FontWeight="Bold" />
+
+        <TextBlock Grid.Row="2"
+                   Text="{Binding StatusText}"
+                   TextWrapping="Wrap"
+                   VerticalAlignment="Top"
+                   FontSize="14" />
+    </Grid>
+</Window>
+
+6. Build and Run
+From src/GtaVModManager: (MUST DO BOTH OR ELSE IT WON'T CREATE Settings.json!)
+
+dotnet build
+dotnet run
+
+7. Expected Results
+
+When the application starts:
+
+Settings.json is created in the repository root:
+GtaVModManager/
+├── Settings.json
+├── Cache/
+├── Logs/
+├── Mods/
+├── Profiles/
+└── src/
+
+8. Settings.json should generate with code inside it while also 
+launching the executable.
+
+9. Delete bin and obj then Commit this milestone:
+
+git checkout dev
+git add .
+git commit -m "Implement settings model and JSON persistence"
+git push
+
+If you're working in a dedicated feature branch:
+
+git checkout -b feature/settings
+
+Then commit and push as usual.
+
+//////////////---------------\\\\\\\\\\\\\\
+
+Phase 2: Mod Discovery System (45–60 min)
+
+Now that Settings persistence is working, we are moving into the first real engine component of the mod manager:
+
+🔍 Automatically detecting mods inside the Mods/ directory
+
+This is the moment your application stops being a settings viewer and starts becoming a mod-aware system.
+
+🧭 Goal of Phase 2
+
+By the end of this phase, your app will:
+
+Scan the Mods/ folder
+Detect installed mods (folders)
+Display them in the UI
+Represent each mod as a structured object
+
+📦 Expected Mods Folder Structure
+
+We will assume this structure:
+
+Mods/
+├── NaturalVisionEvolved/
+├── RealisticDrivingV/
+├── PoliceEnhancer/
+
+Each folder = one mod.
+
+🧠 Core Concept
+
+A mod is simply:
+
+A folder inside Mods/
+
+Later we will extend this to zip files, metadata, versions, etc.
+
+For now, simplicity wins.
+
+🧱 Step 1 — Create Mod Model
+
+Create: Models/Mod.cs
+
+namespace GtaVModManager.Models;
+
+public class Mod
+{
+    public string Name { get; set; } = string.Empty;
+
+    public string FullPath { get; set; } = string.Empty;
+
+    public bool IsEnabled { get; set; } = true;
+}
+
+🔍 Step 2 — Create Mod Discovery Service
+Create: Services/ModDiscoveryService.cs
+
+using System.IO;
+using GtaVModManager.Models;
+
+namespace GtaVModManager.Services;
+
+public class ModDiscoveryService
+{
+    private readonly string _modsPath;
+
+    public ModDiscoveryService(string modsPath)
+    {
+        _modsPath = modsPath;
+    }
+
+    public List<Mod> GetMods()
+    {
+        if (!Directory.Exists(_modsPath))
+            return new List<Mod>();
+
+        var modDirectories = Directory.GetDirectories(_modsPath);
+
+        var mods = modDirectories.Select(dir => new Mod
+        {
+            Name = Path.GetFileName(dir),
+            FullPath = dir,
+            IsEnabled = true
+        }).ToList();
+
+        return mods;
+    }
+}
+
+🧠 Step 3 — Update ViewModel
+Update MainViewModel.cs
+
+Add:
+using System.Collections.ObjectModel;
+using GtaVModManager.Models;
+using GtaVModManager.Services;
+
+Add properties:
+[ObservableProperty]
+private ObservableCollection<Mod> mods = new();
+
+Update constructor:
+public MainViewModel()
+{
+    _settingsService = new SettingsService();
+
+    Settings = _settingsService.Load();
+
+    LoadMods();
+
+    StatusText = $"Loaded settings from: {_settingsService.SettingsPath}";
+}
+
+Add method:
+private void LoadMods()
+{
+    var modService = new ModDiscoveryService(Settings.ModsDirectory);
+
+    var mods = modService.GetMods();
+
+    Mods = new ObservableCollection<Mod>(mods);
+
+    StatusText = $"Discovered {Mods.Count} mods.";
+}
+
+🖼️ Step 4 — Update UI (MainWindow.xaml)
+
+Replace body Grid with:
+<Grid Margin="20">
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="10"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="10"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <TextBlock Text="GTA V Mod Manager"
+               FontSize="28"
+               FontWeight="Bold"/>
+
+    <TextBlock Grid.Row="2"
+               Text="{Binding StatusText}"
+               FontSize="14"/>
+
+    <ListBox Grid.Row="4"
+             ItemsSource="{Binding Mods}">
+        <ListBox.ItemTemplate>
+            <DataTemplate>
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding IsEnabled}" Margin="5"/>
+                    <TextBlock Text="{Binding Name}" FontSize="14"/>
+                </StackPanel>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+    </ListBox>
+</Grid>
+
+📁 Step 5 — Create Test Mods
+
+Inside your project root:
+
+Mods/
+├── TestMod1/
+├── TestMod2/
+
+Add any empty folders for now.
+
+🚀 Step 6 — Run the App
+
+dotnet build
+dotnet run
+
