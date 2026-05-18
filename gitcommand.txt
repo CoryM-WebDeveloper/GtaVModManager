@@ -1,0 +1,46 @@
+Daily Workflow
+
+git add .
+git commit -m "comments here"
+git push
+
+If you need to restore project on another computer
+
+git clone https://github.com/CoryM-WebDeveloper/GtaVModManager.git
+
+To setup an initial git repository:
+
+git init
+git add .
+git commit -m "Initial project setup"
+
+On github:
+1. Click New repository
+2. Name it <Program Name Here no spaces>
+3. Choose Public or Private
+4. Do not initialize with a README or .gitignore.
+- This will be done within VSCode and committed later.
+5. Click Create Repository.
+
+If you didn't read step 4 and are having difficulties where the online
+version is ahead of the local version, complete the following steps:
+
+git pull origin main --allow-unrelated-histories
+git commit -m "Merge remote changes"
+git push origin main
+
+Then finish by:
+git remote add origin https://github.com/CoryM-WebDeveloper/GtaVModManager.git
+git branch -M main
+git push -u origin main
+git push -u origin main
+
+Now Ready for Daily Workflow above.
+
+New Quick Summary:
+git init
+git add .
+git commit -m "Initial project setup"
+git remote add origin https://github.com/YourUsername/GtaVModManager.git
+git branch -M main
+git push -u origin main
