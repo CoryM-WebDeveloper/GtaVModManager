@@ -36,7 +36,7 @@ FEATURES & FUNCTINALITY
 
 TECHNOLOGY STACK
 =
-Document the programming languages, frameworks, and major dependencies used. 
+This program is developed in C# using dotnet 10.0.
 
 LICENSE
 =
