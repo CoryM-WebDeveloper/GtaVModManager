@@ -221,3 +221,178 @@ If you're working in a dedicated feature branch:
 git checkout -b feature/settings
 
 Then commit and push as usual.
+
+//////////////---------------\\\\\\\\\\\\\\
+
+Phase 2: Mod Discovery System (45–60 min)
+
+Now that Settings persistence is working, we are moving into the first real engine component of the mod manager:
+
+🔍 Automatically detecting mods inside the Mods/ directory
+
+This is the moment your application stops being a settings viewer and starts becoming a mod-aware system.
+
+🧭 Goal of Phase 2
+
+By the end of this phase, your app will:
+
+Scan the Mods/ folder
+Detect installed mods (folders)
+Display them in the UI
+Represent each mod as a structured object
+
+📦 Expected Mods Folder Structure
+
+We will assume this structure:
+
+Mods/
+├── NaturalVisionEvolved/
+├── RealisticDrivingV/
+├── PoliceEnhancer/
+
+Each folder = one mod.
+
+🧠 Core Concept
+
+A mod is simply:
+
+A folder inside Mods/
+
+Later we will extend this to zip files, metadata, versions, etc.
+
+For now, simplicity wins.
+
+🧱 Step 1 — Create Mod Model
+
+Create: Models/Mod.cs
+
+namespace GtaVModManager.Models;
+
+public class Mod
+{
+    public string Name { get; set; } = string.Empty;
+
+    public string FullPath { get; set; } = string.Empty;
+
+    public bool IsEnabled { get; set; } = true;
+}
+
+🔍 Step 2 — Create Mod Discovery Service
+Create: Services/ModDiscoveryService.cs
+
+using System.IO;
+using GtaVModManager.Models;
+
+namespace GtaVModManager.Services;
+
+public class ModDiscoveryService
+{
+    private readonly string _modsPath;
+
+    public ModDiscoveryService(string modsPath)
+    {
+        _modsPath = modsPath;
+    }
+
+    public List<Mod> GetMods()
+    {
+        if (!Directory.Exists(_modsPath))
+            return new List<Mod>();
+
+        var modDirectories = Directory.GetDirectories(_modsPath);
+
+        var mods = modDirectories.Select(dir => new Mod
+        {
+            Name = Path.GetFileName(dir),
+            FullPath = dir,
+            IsEnabled = true
+        }).ToList();
+
+        return mods;
+    }
+}
+
+🧠 Step 3 — Update ViewModel
+Update MainViewModel.cs
+
+Add:
+using System.Collections.ObjectModel;
+using GtaVModManager.Models;
+using GtaVModManager.Services;
+
+Add properties:
+[ObservableProperty]
+private ObservableCollection<Mod> mods = new();
+
+Update constructor:
+public MainViewModel()
+{
+    _settingsService = new SettingsService();
+
+    Settings = _settingsService.Load();
+
+    LoadMods();
+
+    StatusText = $"Loaded settings from: {_settingsService.SettingsPath}";
+}
+
+Add method:
+private void LoadMods()
+{
+    var modService = new ModDiscoveryService(Settings.ModsDirectory);
+
+    var mods = modService.GetMods();
+
+    Mods = new ObservableCollection<Mod>(mods);
+
+    StatusText = $"Discovered {Mods.Count} mods.";
+}
+
+🖼️ Step 4 — Update UI (MainWindow.xaml)
+
+Replace body Grid with:
+<Grid Margin="20">
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="10"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="10"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <TextBlock Text="GTA V Mod Manager"
+               FontSize="28"
+               FontWeight="Bold"/>
+
+    <TextBlock Grid.Row="2"
+               Text="{Binding StatusText}"
+               FontSize="14"/>
+
+    <ListBox Grid.Row="4"
+             ItemsSource="{Binding Mods}">
+        <ListBox.ItemTemplate>
+            <DataTemplate>
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding IsEnabled}" Margin="5"/>
+                    <TextBlock Text="{Binding Name}" FontSize="14"/>
+                </StackPanel>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+    </ListBox>
+</Grid>
+
+📁 Step 5 — Create Test Mods
+
+Inside your project root:
+
+Mods/
+├── TestMod1/
+├── TestMod2/
+
+Add any empty folders for now.
+
+🚀 Step 6 — Run the App
+
+dotnet build
+dotnet run
+
