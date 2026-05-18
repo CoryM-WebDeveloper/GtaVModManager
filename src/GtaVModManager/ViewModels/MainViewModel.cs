@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using GtaVModManager.Models;
 using GtaVModManager.Services;
@@ -12,20 +13,26 @@ public partial class MainViewModel : ObservableObject
     private string statusText = "Initializing...";
 
     [ObservableProperty]
-    private Settings settings = new();
+    private ObservableCollection<Mod> mods = new();
 
     public MainViewModel()
     {
         _settingsService = new SettingsService();
 
-        Settings = _settingsService.Load();
-
-        StatusText = $"Settings loaded from: {_settingsService.SettingsPath}";
+        LoadMods();
     }
 
-    public void SaveSettings()
+    private void LoadMods()
     {
-        _settingsService.Save(Settings);
-        StatusText = "Settings saved.";
+        var modService = new ModDiscoveryService("Mods");
+
+        var discovered = modService.GetMods();
+
+        Mods.Clear();
+
+        foreach (var mod in discovered)
+            Mods.Add(mod);
+
+        StatusText = $"Discovered {Mods.Count} mods.";
     }
 }

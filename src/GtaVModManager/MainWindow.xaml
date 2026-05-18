@@ -7,20 +7,32 @@
 
     <Grid Margin="20">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0"
-                   Text="GTA V Mod Manager"
+        <TextBlock Text="GTA V Mod Manager"
                    FontSize="28"
-                   FontWeight="Bold" />
+                   FontWeight="Bold"/>
 
         <TextBlock Grid.Row="2"
                    Text="{Binding StatusText}"
-                   TextWrapping="Wrap"
-                   VerticalAlignment="Top"
-                   FontSize="14" />
+                   FontSize="14"/>
+
+        <ListBox Grid.Row="4"
+                 ItemsSource="{Binding Mods}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding IsEnabled}" Margin="5"/>
+                        <TextBlock Text="{Binding Name}" FontSize="14"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
     </Grid>
 </Window>
