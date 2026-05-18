@@ -1,0 +1,99 @@
+🧪 DAILY WORKFLOW (THIS IS THE IMPORTANT PART)
+
+🧠 STEP 1 — Always start from dev
+
+git checkout dev
+git pull origin dev
+
+🌱 STEP 2 — Create feature branch (recommended)
+
+Example: working on mod scanning
+
+git checkout -b feature/mod-discovery
+
+Now you're working in isolation.
+
+✍️ STEP 3 — Make changes in VS Code
+
+Edit files normally.
+
+📦 STEP 4 — Stage changes
+git add .
+
+Or specific files:
+
+git add Services/ModDiscoveryService.cs
+
+💾 STEP 5 — Commit changes
+
+git commit -m "Add mod discovery system"
+
+🚀 STEP 6 — Push feature branch
+
+git push -u origin feature/mod-discovery
+
+🔀 STEP 7 — Merge into dev (via GitHub OR CLI)
+
+Option A (recommended): GitHub PR
+Open GitHub
+
+Create Pull Request:
+
+Go into feature branch where working
+> "This branch is 1 commit ahead of dev"
+> Contribute
+> Open pull request
+> Add Title
+> Add description
+> Create pull request
+
+feature/mod-discovery → dev
+Review → Merge
+
+Option B (CLI merge)
+git checkout dev
+git merge feature/mod-discovery
+git push origin dev
+
+🧪 STEP 8 — Promote dev → main (release)
+
+When dev is stable:
+
+git checkout main
+git merge dev
+git push origin main
+
+🧹 STEP 9 — Clean up feature branch
+
+git branch -d feature/mod-discovery
+git push origin --delete feature/mod-discovery
+
+🧭 SIMPLE DAILY LOOP (memorize this)
+dev → feature branch → work → commit → push → PR → dev → main
+
+🧠 VS CODE SHORTCUT FLOW (VISUAL VERSION)
+
+Inside VS Code:
+
+Source Control Panel:
+Stage (+)
+Message box
+Commit button
+Push button
+
+But still ALWAYS remember:
+
+VS Code buttons are just UI wrappers over the same Git commands above.
+
+⚠️ IMPORTANT RULES (for your project)
+🚫 Never commit directly to main
+
+Main = sacred stable build
+
+🚫 Don’t develop directly in main
+
+That’s how mod managers become chaos engines
+
+✅ Always use dev as integration buffer
+
+This saves you when features break
