@@ -39,6 +39,14 @@ Open GitHub
 
 Create Pull Request:
 
+Go into feature branch where working
+> "This branch is 1 commit ahead of dev"
+> Contribute
+> Open pull request
+> Add Title
+> Add description
+> Create pull request
+
 feature/mod-discovery → dev
 Review → Merge
 
