@@ -44,3 +44,50 @@ git commit -m "Initial project setup"
 git remote add origin https://github.com/YourUsername/GtaVModManager.git
 git branch -M main
 git push -u origin main
+
+🧭 Recommended Branch Setup
+✔ Keep main = stable baseline
+- Always runnable
+- Always “clean mod manager core”
+- Never break it intentionally
+
+✔ Create dev (or develop) = active work zone
+- New features go here
+- Broken builds are allowed
+- Rapid iteration happens here
+
+How To:
+
+git checkout -b dev
+git push -u origin dev
+
+🧠 How your workflow now works
+On dev (your workshop 🔧)
+- Add features
+- Break things
+- Refactor systems
+- Build mod deployment engine
+
+When something is stable:
+
+git checkout main
+git merge dev
+
+Then push:
+
+git push
+
+
+
+🛡️ Extra safety (highly recommended)
+
+You can also protect main on GitHub:
+
+Go to:
+
+- GitHub repo → Settings → Branches
+- Add branch protection rule for main
+    - Require pull requests
+    - Block direct pushes (optional but powerful)
+
+This turns main into a sealed “release vault.”
