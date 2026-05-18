@@ -26,11 +26,11 @@ git add Services/ModDiscoveryService.cs
 
 💾 STEP 5 — Commit changes
 
-git commit -m "Add mod discovery system"
+git commit -m "Add mod symlink system"
 
 🚀 STEP 6 — Push feature branch
 
-git push -u origin feature/mod-discovery
+git push -u origin feature/symlink
 
 🔀 STEP 7 — Merge into dev (via GitHub OR CLI)
 

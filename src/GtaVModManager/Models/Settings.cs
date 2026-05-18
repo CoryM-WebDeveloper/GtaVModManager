@@ -15,4 +15,6 @@ public class Settings
     public string CacheDirectory { get; set; } = "Cache";
 
     public string LogsDirectory { get; set; } = "Logs";
+
+    public string GtaVPath { get; set; } = @"C:\Program Files (x86)\Steam\steamapps\common\Grand Theft Auto V";
 }

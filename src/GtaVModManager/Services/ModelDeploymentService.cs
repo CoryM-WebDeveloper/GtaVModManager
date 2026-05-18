@@ -1,17 +1,3 @@
-🧱 STEP 1 — Define GTA V Path in Settings
-
-Add this to your Settings model:
-
-public string GtaVPath { get; set; } = @"C:\Program Files (x86)\Steam\steamapps\common\Grand Theft Auto V";
-
-👉 You can change this later in UI, but for now hardcode is fine.
-
-🧠 STEP 2 — Create Deployment Service
-
-Create:
-
-Services/ModDeploymentService.cs
-🔧 Core implementation
 using System.IO;
 using GtaVModManager.Models;
 
@@ -92,35 +78,3 @@ public class ModDeploymentService
         process.WaitForExit();
     }
 }
-🧠 WHAT THIS DOES
-Enable mod:
-
-Mods/Redux → GTA V/Redux (symlink)
-
-Disable mod:
-Deletes GTA V/Redux link only
-
-Clean:
-Deletes all symlinks created by manager
-
-⚠️ WINDOWS REQUIREMENT (IMPORTANT)
-
-Symlinks require:
-
-Option A (recommended)
-
-Run VS Code as Administrator
-
-Option B
-
-Enable Developer Mode:
-Settings → Privacy → For Developers → Developer Mode ON
-
-🧠 STEP 3 — Hook into ViewModel
-
-Add this to MainViewModel:
-private readonly ModDeploymentService _deploymentService;
-
-Initialize it:
-_deploymentService = new ModDeploymentService(Settings.GtaVPath);
-
