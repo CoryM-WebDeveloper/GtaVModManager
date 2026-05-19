@@ -28,11 +28,25 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <CheckBox IsChecked="{Binding IsEnabled}" Margin="5"/>
-                        <TextBlock Text="{Binding Name}" FontSize="14"/>
+
+                        <TextBlock Text="{Binding Name}"
+                                Width="200"
+                                VerticalAlignment="Center"/>
+
+                        <Button Content="Enable"
+                                Margin="5,0"
+                                Command="{Binding DataContext.EnableCommand,
+                                                    RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding}" />
+
+                        <Button Content="Disable"
+                                Margin="5,0"
+                                Command="{Binding DataContext.DisableCommand,
+                                                    RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding}" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-
     </Grid>
 </Window>

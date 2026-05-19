@@ -3,11 +3,32 @@ Phase	                            (Estimated Time)
 Settings model and JSON save/load	(30–45 min)
 Mod discovery	                    (45–60 min)
 Deployment engine (symlinks)	    (1–2 hours)
+🔥 “Live Symlink Inspector UI”
+🧭 A “Select GTA V Folder” UI setup screen
 Basic WPF UI	                    (1–2 hours)
 Launch and cleanup buttons	        (30–60 min)
 Testing and fixes	                (1–2 hours)
 
 Total: ~5 to 8 focused hours.
+
+Rethink:
+🧱 What you should build NEXT (tomorrow priority list)
+🔥 1. Mod State Engine (MOST IMPORTANT)
+
+Before anything UI or launch-related:
+
+You need a central truth:
+
+ModProfile
+
+This becomes your brain.
+
+It should contain:
+Enabled mods
+Load order
+File overrides map
+Active game path
+Launcher type (GTA5 / RPH)
 
 If you already have the project scaffolded, that’s a huge head start.
 

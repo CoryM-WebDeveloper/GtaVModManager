@@ -1,9 +1,9 @@
 {
-  "GamePath": "",
-  "LaunchExecutable": "",
+  "GtaVPath": "D:\\1-GameHub\\Steam\\steamapps\\common\\Grand Theft Auto V",
+  "LaunchExecutable": "GTA5.exe",
   "ActiveProfile": "Default",
-  "ModsDirectory": "Mods",
-  "ProfilesDirectory": "Profiles",
-  "CacheDirectory": "Cache",
-  "LogsDirectory": "Logs"
+  "ModsDirectory": "D:\\3-VSCode-Projects\\Dev-C-Sharp\\GtaVModManager\\Mods",
+  "ProfilesDirectory": "D:\\3-VSCode-Projects\\Dev-C-Sharp\\GtaVModManager\\Profiles",
+  "CacheDirectory": "D:\\3-VSCode-Projects\\Dev-C-Sharp\\GtaVModManager\\Cache",
+  "LogsDirectory": "D:\\3-VSCode-Projects\\Dev-C-Sharp\\GtaVModManager\\Logs"
 }

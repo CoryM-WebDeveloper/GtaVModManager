@@ -1,5 +1,8 @@
 🧪 DAILY WORKFLOW (THIS IS THE IMPORTANT PART)
 
+To refresh your memory as to which branch you're in:
+git branch --show-current
+
 🧠 STEP 1 — Always start from dev
 
 git checkout dev
